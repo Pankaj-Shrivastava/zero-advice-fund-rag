@@ -1,0 +1,62 @@
+[
+  {
+    "source_url": "https://groww.in/mutual-funds/icici-prudential-large-cap-fund-direct-growth",
+    "amc": "ICICI Prudential",
+    "scheme": "ICICI Prudential Large Cap Fund – Direct Growth",
+    "category": "Large Cap"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/icici-prudential-flexicap-fund-direct-growth",
+    "amc": "ICICI Prudential",
+    "scheme": "ICICI Prudential Flexicap Fund – Direct Growth",
+    "category": "Flexi Cap"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/icici-prudential-midcap-fund-direct-growth",
+    "amc": "ICICI Prudential",
+    "scheme": "ICICI Prudential Midcap Fund – Direct Growth",
+    "category": "Mid Cap"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/icici-prudential-indo-asia-equity-fund-direct-growth",
+    "amc": "ICICI Prudential",
+    "scheme": "ICICI Prudential Indo Asia Equity Fund – Direct Growth",
+    "category": "Thematic / International"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/icici-prudential-elss-tax-saver-direct-plan-growth",
+    "amc": "ICICI Prudential",
+    "scheme": "ICICI Prudential ELSS Tax Saver – Direct Plan Growth",
+    "category": "ELSS (Tax Saver)"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth",
+    "amc": "HDFC Mutual Fund",
+    "scheme": "HDFC Mid-Cap Fund – Direct Growth",
+    "category": "Mid Cap"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth",
+    "amc": "HDFC Mutual Fund",
+    "scheme": "HDFC Small Cap Fund – Direct Growth",
+    "category": "Small Cap"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/hdfc-silver-etf-fof-direct-growth",
+    "amc": "HDFC Mutual Fund",
+    "scheme": "HDFC Silver ETF FoF – Direct Growth",
+    "category": "Commodity / Thematic"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth",
+    "amc": "HDFC Mutual Fund",
+    "scheme": "HDFC ELSS Tax Saver Fund – Direct Plan Growth",
+    "category": "ELSS (Tax Saver)"
+  },
+  {
+    "source_url": "https://groww.in/mutual-funds/hdfc-large-and-mid-cap-fund-direct-growth",
+    "amc": "HDFC Mutual Fund",
+    "scheme": "HDFC Large and Mid Cap Fund – Direct Growth",
+    "category": "Large & Mid Cap"
+  }
+]
