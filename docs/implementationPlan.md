@@ -144,10 +144,11 @@ python -m backend.ingestion.parser
 | # | Task | Detail |
 |---|------|--------|
 | 1C.1 | **Create `ingestion/chunker.py`** | Split parsed documents into retrieval-friendly chunks |
-| 1C.2 | **Section-aware splitting** | Respect section boundaries — never split a table or section mid-way |
-| 1C.3 | **Chunk parameters** | Size: **300–500 tokens**, Overlap: **50–100 tokens** |
-| 1C.4 | **Attach metadata to each chunk** | `chunk_id`, `source_url`, `amc`, `scheme`, `category`, `section`, `scraped_at` |
-| 1C.5 | **Log chunk statistics** | Total chunks per fund, average chunk size |
+| 1C.2 | **Dynamic table splitting** | Large tables (e.g. Holdings) must be split by rows, prepending the table header to each chunk |
+| 1C.3 | **Text splitting** | Text sections > 1000 chars split by paragraphs/sentences with overlap |
+| 1C.4 | **Metadata embedding context** | Prepend fund name and section to chunk text (e.g. `[ICICI Large Cap - Holdings]`) for better BGE embedding semantic representation |
+| 1C.5 | **Attach metadata to each chunk** | `chunk_id`, `source_url`, `amc`, `scheme`, `category`, `section`, `scraped_at` |
+| 1C.6 | **Log chunk statistics** | Total chunks per fund, average chunk size |
 
 **Key file:** [chunker.py](file:///c:/Users/panka/Documents/Pankaj_CodeSpace/AI_Projects/zero-advice-fund-rag/backend/ingestion/chunker.py) *(to be created)*
 
