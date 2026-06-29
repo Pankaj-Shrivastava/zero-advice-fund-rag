@@ -5,10 +5,11 @@ import hashlib
 INPUT_FILE = os.path.join(os.path.dirname(__file__), "parsed_data.json")
 OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "chunked_data.json")
 
-def generate_chunk_id(scheme, section, index):
-    # e.g., iciciprudentiallar-holdings-001
+def generate_chunk_id(scheme, section, text, index):
+    # e.g., iciciprudentiallar-holdings-001-a1b2c3
     safe_scheme = "".join(c for c in scheme if c.isalnum()).lower()[:20]
-    return f"{safe_scheme}-{section}-{index:03d}"
+    content_hash = hashlib.md5(text.encode('utf-8')).hexdigest()[:6]
+    return f"{safe_scheme}-{section}-{index:03d}-{content_hash}"
 
 def split_table(text, chunk_char_limit=1000):
     lines = text.split('\n')
@@ -77,7 +78,7 @@ def chunk_document(doc):
         final_text = context_prefix + rc
         
         chunk_doc = {
-            "chunk_id": generate_chunk_id(scheme, section, i+1),
+            "chunk_id": generate_chunk_id(scheme, section, final_text, i+1),
             "text": final_text,
             "source_url": doc["source_url"],
             "amc": doc["amc"],
