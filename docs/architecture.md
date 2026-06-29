@@ -84,9 +84,11 @@ flowchart LR
 
 | Parameter | Value | Rationale |
 |-----------|-------|-----------|
-| **Chunk size** | ~300–500 tokens | Small enough for precise retrieval, large enough for context |
-| **Overlap** | ~50–100 tokens | Prevents loss of context at chunk boundaries |
-| **Strategy** | Section-aware splitting | Respect section boundaries (e.g., don't split an exit load table across chunks) |
+| **1-to-1 Mapping** | For sections < 1000 tokens | Keeps small sections (like Expense Ratio, Exit Load) fully intact |
+| **Table Splitting** | Row-based split + header | Large tables (e.g., Holdings > 3000 tokens) are split by rows, with the table header prepended to every chunk to maintain context |
+| **Text Splitting** | Paragraphs with overlap | Large text sections (> 1000 chars) are split logically to fit within the ~500 token limit of BGE |
+| **Metadata Prefixing**| `[Fund Name - Section]` | Prepending this to chunk text improves the BGE embedding semantic representation |
+
 
 Each chunk carries metadata:
 
