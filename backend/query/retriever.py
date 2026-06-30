@@ -86,6 +86,7 @@ def retrieve(query: str, top_k: int = 3) -> list:
             "amc": meta.get("amc"),
             "scheme": meta.get("scheme"),
             "section": meta.get("section"),
+            "scraped_at": meta.get("scraped_at"),
             "score": dist
         }
         retrieved_chunks.append(chunk)
