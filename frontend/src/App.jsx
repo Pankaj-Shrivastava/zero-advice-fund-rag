@@ -96,9 +96,9 @@ const SupportedFunds = () => {
 
 const SuggestionChips = ({ onSelect }) => {
   const suggestions = [
-    "What is an Expense Ratio?",
-    "Explain 12b-1 fees.",
-    "How do index fund management fees work?"
+    "What is the expense ratio of ICICI Prudential Large Cap Fund?",
+    "Who manages the HDFC Flexi Cap Fund?",
+    "What is the exit load if I redeem ICICI Prudential Flexicap Fund early?",
   ];
 
   return (
