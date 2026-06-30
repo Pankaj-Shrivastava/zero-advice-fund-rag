@@ -56,10 +56,27 @@ const SupportedFunds = () => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
+    const CACHE_KEY = 'zeroadvice_funds';
+    const MAX_AGE_MS = 24 * 60 * 60 * 1000; // 1 day
+
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < MAX_AGE_MS) {
+          setFunds(data);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (e) { /* ignore parse errors */ }
+
     fetch('/api/funds')
       .then(res => res.json())
       .then(data => {
-        setFunds(data.funds || []);
+        const fundsList = data.funds || [];
+        setFunds(fundsList);
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: fundsList, timestamp: Date.now() }));
         setLoading(false);
       })
       .catch(err => {
@@ -96,9 +113,9 @@ const SupportedFunds = () => {
 
 const SuggestionChips = ({ onSelect }) => {
   const suggestions = [
-    "What is an Expense Ratio?",
-    "Explain 12b-1 fees.",
-    "How do index fund management fees work?"
+    "What is the expense ratio of ICICI Prudential Large Cap Fund?",
+    "Who manages the HDFC Flexi Cap Fund?",
+    "What is the exit load if I redeem ICICI Prudential Flexicap Fund early?",
   ];
 
   return (
@@ -218,6 +235,7 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showFunds, setShowFunds] = useState(false);
+  const [activeFundContext, setActiveFundContext] = useState(null);
   const bottomRef = React.useRef(null);
 
   const scrollToBottom = () => {
@@ -233,6 +251,7 @@ export default function App() {
   const handleReset = () => {
     setMessages([]);
     setShowFunds(false);
+    setActiveFundContext(null);
   };
 
   const handleToggleFunds = () => {
@@ -248,12 +267,15 @@ export default function App() {
       const response = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: query })
+        body: JSON.stringify({ question: query, context_fund: activeFundContext })
       });
       
       const data = await response.json();
       
       if (response.ok) {
+        if (data.context_fund) {
+          setActiveFundContext(data.context_fund);
+        }
         setMessages((prev) => [...prev, { role: 'assistant', data }]);
       } else {
         setMessages((prev) => [...prev, { role: 'assistant', data: { type: 'refusal', answer: data.detail || "An error occurred." } }]);

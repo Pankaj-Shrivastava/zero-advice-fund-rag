@@ -301,6 +301,8 @@ def validate_response(response: str) -> dict:
 | 4B.8 | Very long question (>1000 chars) | `POST /api/query {"question": "a"*1001}` | `400` + `"Question too long"` |
 | 4B.9 | Special characters in question | `POST /api/query {"question": "What's the ₹ expense?"}` | `200` + valid response |
 | 4B.10 | Concurrent requests (5 parallel) | `xargs -P5 -I{} curl ...` | All return valid responses (or rate-limit message) |
+| 4B.11 | Contextual follow-up | `POST /api/query {"question": "AUM?", "context_fund": "ICICI Prudential Large Cap Fund"}` | `200` + `{ answer: "...ICICI AUM...", context_fund: "ICICI Prudential Large Cap Fund" }` |
+| 4B.12 | Context override | `POST /api/query {"question": "What about HDFC Mid-Cap?", "context_fund": "ICICI Prudential"}` | `200` + `{ answer: "...HDFC...", context_fund: "HDFC Mid-Cap Opportunities Fund" }` |
 
 ### 4C. Supported Funds Endpoint
 

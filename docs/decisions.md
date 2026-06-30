@@ -136,3 +136,51 @@ Each entry follows this structure:
 | **Decision** | Keep all chat messages in React `useState` only — no `localStorage`, no `sessionStorage`. |
 | **Rationale** | Simplest implementation that meets the requirement exactly. Opening a new tab/refreshing creates a blank state. No risk of stale or leaked data between sessions. |
 | **Impact** | `frontend/src/App.jsx` |
+
+---
+
+## DEC-011 — Remove Duplicate Citation from LLM Answer Text
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-30 |
+| **Context** | The LLM system prompt instructed the model to embed a citation URL and "Last updated from sources: &lt;date&gt; &lt;url&gt;" directly inside the answer text. However, the frontend card footer already renders `last_updated` and `source_url` from the structured JSON response fields, causing ugly duplication. |
+| **Decision** | Replace prompt rules 3 ("Include EXACTLY ONE citation link") and 4 ("End every response with: Last updated from sources…") with a single rule: "Do NOT include source URLs, dates, or citation footers in your answer — these are displayed separately by the UI." |
+| **Rationale** | The structured JSON response already carries `source_url` and `last_updated` as first-class fields. The card footer renders them beautifully with icons. Embedding them again in the answer text was redundant, cluttered, and broke the clean card layout. |
+| **Impact** | `backend/query/generator.py` (system prompt) |
+
+---
+
+## DEC-012 — Use Corpus-Specific Example Questions
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-30 |
+| **Context** | The 3 suggestion chips on the welcome screen showed generic questions ("What is an Expense Ratio?", "Explain Exit Load", "How do dividends work?") that were not specific to any fund in our corpus. These generic questions often returned "context not found" responses, giving a poor first impression. |
+| **Decision** | Replace with fund-specific questions that directly map to data in `parsed_data.json`: (1) "What is the expense ratio of ICICI Prudential Large Cap Fund?" (2) "What is the exit load for HDFC Mid-Cap Opportunities Fund?" (3) "What are the top holdings of ICICI Prudential Flexicap Fund?" |
+| **Rationale** | These questions target specific sections (`expense_ratio`, `exit_load`, `holdings`) of specific funds in our corpus, guaranteeing a high-quality factual response on the very first click. This showcases the system's capability immediately and builds user confidence. |
+| **Impact** | `frontend/src/App.jsx` (SuggestionChips component) |
+
+---
+
+## DEC-013 — Cache Supported Funds in Browser (sessionStorage + 24h TTL)
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-30 |
+| **Context** | The Supported Funds view fetches from `GET /api/funds` every time the user toggles to it. The fund list rarely changes (only after a new ingestion run), so hitting the backend repeatedly is wasteful. |
+| **Decision** | Cache the funds list in `sessionStorage` with a 24-hour TTL. On load, check cache first; only call the API if cache is missing or expired. |
+| **Rationale** | `sessionStorage` is scoped to the browser tab — it naturally clears when the tab/browser closes (meeting the "until browser is open" requirement). The 24-hour TTL ensures that even a long-lived tab eventually picks up newly ingested funds. No risk of serving stale data across separate sessions since `sessionStorage` doesn't persist across tabs or restarts. |
+| **Impact** | `frontend/src/App.jsx` (SupportedFunds component) |
+
+---
+
+## DEC-014 — Client-Side Context Tracking for Follow-Up Questions
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-30 |
+| **Context** | Users wanted to ask follow-up questions (e.g., "What about AUM?") without re-typing the fund name. |
+| **Decision** | Implement client-side session context. The backend remains completely stateless. The `POST /api/query` response returns a `context_fund` field (extracted from the retrieved ChromaDB chunks). The frontend stores this in `activeFundContext` and passes it back in the next request body. |
+| **Rationale** | Keeps the backend perfectly RESTful, stateless, and scalable. Prevents the need for a database to store user sessions or chat histories. The backend uses the provided `context_fund` to augment the query ("{query} for {context_fund}") and apply a ChromaDB metadata filter, overriding it only if the user explicitly types a different AMC name. |
+| **Impact** | `frontend/src/App.jsx`, `backend/api/main.py`, `backend/query/retriever.py` |

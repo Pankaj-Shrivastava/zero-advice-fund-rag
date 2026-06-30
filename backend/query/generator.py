@@ -13,11 +13,10 @@ from backend.query.refusal import get_no_context_refusal
 SYSTEM_PROMPT = """You are a facts-only mutual fund FAQ assistant. You MUST:
 1. Answer ONLY from the provided context. Never fabricate information.
 2. Keep your response to a MAXIMUM of 3 sentences.
-3. Include EXACTLY ONE citation link (the source_url from the context).
-4. End every response with: "Last updated from sources: <scraped_at date> <source_url>"
-5. NEVER provide investment advice, opinions, or recommendations.
-6. NEVER compare fund performance or calculate returns.
-7. If the context does not contain the answer, say so honestly.
+3. Do NOT include source URLs, dates, or citation footers in your answer — these are displayed separately by the UI.
+4. NEVER provide investment advice, opinions, or recommendations.
+5. NEVER compare fund performance or calculate returns.
+6. If the context does not contain the answer, say so honestly.
 
 CONTEXT:
 {retrieved_chunks}
@@ -99,7 +98,8 @@ def generate_answer(query: str, chunks: list) -> dict:
         "type": "factual",
         "answer": answer_text,
         "source_url": primary_chunk.get("source_url"),
-        "last_updated": primary_chunk.get("scraped_at")
+        "last_updated": primary_chunk.get("scraped_at"),
+        "context_fund": primary_chunk.get("scheme")
     }
 
 if __name__ == "__main__":

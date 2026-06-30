@@ -283,7 +283,8 @@ POST /api/query
 
 ```json
 {
-  "question": "What is the expense ratio of HDFC Mid-Cap Fund?"
+  "question": "total AUM?",
+  "context_fund": "ICICI Prudential Large Cap Fund - Direct Growth" // Optional: used for follow-up questions
 }
 ```
 
@@ -295,7 +296,8 @@ POST /api/query
   "type": "factual",
   "answer": "The expense ratio of HDFC Mid-Cap Fund (Direct Growth) is 0.75% as of the latest factsheet.",
   "source_url": "https://groww.in/mutual-funds/hdfc-mid-cap-fund-direct-growth",
-  "last_updated": "2026-06-30"
+  "last_updated": "2026-06-30",
+  "context_fund": "HDFC Mid-Cap Opportunities Fund - Direct Growth"
 }
 ```
 
