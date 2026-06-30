@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ZeroAdvice</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#adc6ff",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-tint": "#005bc1",
+                        "on-tertiary-fixed-variant": "#5715bd",
+                        "on-surface": "#181c23",
+                        "surface-container": "#ecedf9",
+                        "surface-bright": "#f9f9ff",
+                        "surface-variant": "#e0e2ed",
+                        "on-secondary-container": "#006f6a",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#fffbff",
+                        "secondary-fixed": "#65f8f0",
+                        "inverse-on-surface": "#eef0fc",
+                        "on-secondary-fixed-variant": "#00504d",
+                        "surface-container-low": "#f1f3fe",
+                        "tertiary-container": "#8654ee",
+                        "surface-container-highest": "#e0e2ed",
+                        "tertiary-fixed-dim": "#d1bcff",
+                        "outline-variant": "#c1c6d7",
+                        "on-primary-container": "#fefcff",
+                        "primary-fixed-dim": "#adc6ff",
+                        "surface-container-high": "#e6e8f3",
+                        "on-surface-variant": "#414755",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#eaddff",
+                        "on-primary-fixed-variant": "#004493",
+                        "surface": "#f9f9ff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed": "#001a41",
+                        "on-tertiary-fixed": "#24005b",
+                        "primary": "#0058bc",
+                        "secondary-container": "#61f5ed",
+                        "primary-container": "#0070eb",
+                        "outline": "#717786",
+                        "inverse-surface": "#2d3039",
+                        "on-tertiary": "#ffffff",
+                        "secondary": "#006a66",
+                        "on-secondary-fixed": "#00201e",
+                        "tertiary": "#6d37d3",
+                        "secondary-fixed-dim": "#3fdbd4",
+                        "on-background": "#181c23",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8d9e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max-width": "1120px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "section-gap": "80px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f9f9ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20.5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm10 10a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zM20 40.5a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm-10-10a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1z' fill='%23e0e2ed' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .search-glow {
+            box-shadow: 0 8px 32px rgba(0, 194, 187, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+        }
+        .gradient-border {
+            position: relative;
+            border-radius: 24px;
+        }
+        .gradient-border::before {
+            content: "";
+            position: absolute;
+            inset: -1px;
+            border-radius: 25px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(0, 194, 187, 0.3), rgba(134, 84, 238, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="font-body-md text-on-surface antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- Ambient background glow -->
+<div class="fixed top-20 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] bg-[#00C2BB] rounded-full mix-blend-multiply filter blur-[100px] opacity-5 pointer-events-none z-0"></div>
+<main class="flex-grow w-full max-w-container-max-width mx-auto px-margin-mobile pt-12 pb-24 relative z-10 flex flex-col items-center">
+<!-- Header / Welcome -->
+<div class="w-full max-w-md flex flex-col items-center mb-6 text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2 font-bold tracking-tight">ZeroAdvice</h1>
+<p class="text-on-surface-variant font-body-md mb-2">Facts-only. No investment advice.</p>
+</div>
+<!-- Example Questions -->
+<div class="w-full max-w-md flex flex-col gap-3 mb-8">
+<button class="bg-surface-container-lowest/80 backdrop-blur-md rounded-xl p-4 border border-outline-variant/30 text-left hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="text-on-surface font-body-md">What is an ETF?</span>
+</button>
+<button class="bg-surface-container-lowest/80 backdrop-blur-md rounded-xl p-4 border border-outline-variant/30 text-left hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="text-on-surface font-body-md">Explain Expense Ratios</span>
+</button>
+<button class="bg-surface-container-lowest/80 backdrop-blur-md rounded-xl p-4 border border-outline-variant/30 text-left hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="text-on-surface font-body-md">How do dividends work?</span>
+</button>
+</div>
+<!-- Search Area -->
+<div class="w-full max-w-md flex flex-col items-center mb-12">
+<div class="relative w-full gradient-border search-glow bg-surface-container-lowest/80 backdrop-blur-xl rounded-2xl h-16 flex items-center px-4 transition-all focus-within:shadow-md focus-within:bg-surface-container-lowest">
+<span class="material-symbols-outlined text-outline-variant mr-3 text-2xl" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md text-on-surface placeholder-outline-variant h-full p-0 font-body-md" placeholder="Ask about funds, fees, or performance..." type="text" value="What are the typical fees for mutual funds?"/>
+<button class="ml-2 bg-primary text-on-primary rounded-full w-10 h-10 flex items-center justify-center hover:bg-primary-container transition-colors shrink-0">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Results Area -->
+<div class="w-full max-w-md flex flex-col gap-6">
+<!-- Card 1: Factual Result -->
+<div class="bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl p-6 card-shadow border border-outline-variant/20 hover:border-primary/30 transition-colors group relative overflow-hidden">
+<!-- Subtle top highlight for glass effect -->
+<div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent"></div>
+<div class="flex items-start justify-between mb-3">
+<h2 class="font-label-md text-label-md text-primary font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">description</span>
+                        Fund Fees Explained
+                    </h2>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mb-6">
+                    Mutual fund fees typically fall into two main categories: shareholder fees and annual fund operating expenses. Shareholder fees are sales charges or commissions, often called "loads," paid when buying or selling shares. Annual operating expenses, commonly expressed as the Expense Ratio, cover management, administrative, and marketing (12b-1) costs on an ongoing basis.
+                </p>
+<div class="flex items-center justify-between pt-4 border-t border-surface-variant">
+<span class="font-label-sm text-label-sm text-outline">Last updated: Oct 2023</span>
+<a class="w-8 h-8 rounded-full bg-primary/5 text-primary flex items-center justify-center hover:bg-primary/10 transition-colors group-hover:scale-105 duration-200" href="#">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">link</span>
+</a>
+</div>
+</div>
+<!-- Card 2: Refusal/Advisory Card -->
+<div class="bg-[#FFF8E6]/80 backdrop-blur-md rounded-2xl p-6 border border-[#F59E0B]/30 relative overflow-hidden">
+<!-- Micro-gradient background -->
+<div class="absolute inset-0 bg-gradient-to-br from-[#F59E0B]/5 to-transparent pointer-events-none"></div>
+<div class="relative z-10 flex gap-4">
+<div class="w-10 h-10 rounded-full bg-[#F59E0B]/15 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[#D97706]" style="font-variation-settings: 'FILL' 1;">info</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-[#B45309] font-semibold mb-1">Advisory Notice</h3>
+<p class="font-body-md text-body-md text-[#92400E]/80 text-sm leading-relaxed">
+                            While we provide comprehensive structural information regarding mutual fund expenses, we cannot offer personalized financial advice or recommend specific funds for your portfolio. Please consult a certified financial advisor for tailored recommendations.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full bg-surface/90 backdrop-blur-xl shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 pb-safe border-t border-outline-variant/20">
+<div class="flex justify-around items-center h-16 px-4 max-w-md mx-auto">
+<a class="flex flex-col items-center justify-center w-full h-full text-primary" href="#">
+<div class="bg-primary/10 px-6 py-1.5 rounded-full mb-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">chat</span>
+</div>
+<span class="font-label-sm text-label-sm text-[11px] font-semibold">Chat</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<div class="px-6 py-1.5 rounded-full mb-1 flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 0;">query_stats</span>
+</div>
+<span class="font-label-sm text-label-sm text-[11px]">Funds</span>
+</a>
+</div>
+</nav>
+<!-- Support padding for bottom nav -->
+<div class="h-16"></div>
+</body></html>

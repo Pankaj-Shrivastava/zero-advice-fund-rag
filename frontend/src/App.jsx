@@ -1,122 +1,213 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from 'react';
+import { Landmark, Info, Search, ArrowRight, Loader2, CheckCircle2, Clock, FileText } from 'lucide-react';
 
-function App() {
-  const [count, setCount] = useState(0)
+const Header = () => (
+  <header className="header">
+    <div className="header-logo">
+      <Landmark size={24} />
+      <span>ZeroAdvice</span>
+    </div>
+  </header>
+);
+
+const Footer = () => (
+  <footer className="footer">
+    <div className="footer-logo">
+      <Landmark size={18} />
+      <span>ZeroAdvice</span>
+    </div>
+    <div className="footer-links">
+      <span>Privacy Policy</span>
+      <span>Terms of Service</span>
+      <span>© 2026 ZeroAdvice. All rights reserved.</span>
+    </div>
+  </footer>
+);
+
+const DisclaimerBanner = () => (
+  <div className="disclaimer-banner-wrapper">
+    <div className="disclaimer-badge">
+      <Info size={16} />
+      <span>Facts-only. No investment advice.</span>
+    </div>
+  </div>
+);
+
+const WelcomeHero = () => (
+  <div className="welcome-hero">
+    <h1 className="welcome-title">Welcome to ZeroAdvice</h1>
+  </div>
+);
+
+const SuggestionChips = ({ onSelect }) => {
+  const suggestions = [
+    "What is an Expense Ratio?",
+    "Explain 12b-1 fees.",
+    "How do index fund management fees work?"
+  ];
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="suggestions-section">
+      <div className="suggestions-label">Try asking about:</div>
+      <div className="suggestions-list">
+        {suggestions.map((s, i) => (
+          <button key={i} className="suggestion-chip" onClick={() => onSelect(s)}>
+            {s}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-      <div className="ticks"></div>
+const SearchBar = ({ onSubmit, isLoading }) => {
+  const [query, setQuery] = useState("");
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      onSubmit(query);
+      setQuery("");
+    }
+  };
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+  return (
+    <div className="search-wrapper">
+      <div className="search-container">
+        <form className="search-form" onSubmit={handleSubmit}>
+          <Search className="search-icon" size={20} />
+          <input 
+            type="text" 
+            className="search-input" 
+            placeholder="What are the average management fees for an index fund"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            disabled={isLoading}
+          />
+          <button type="submit" className="search-button" disabled={!query.trim() || isLoading}>
+            {isLoading ? <Loader2 className="spinner" size={20} /> : <ArrowRight size={20} />}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const ResultFeed = ({ messages, bottomRef }) => {
+  if (messages.length === 0) return null;
+
+  return (
+    <div className="results-feed">
+      {messages.map((msg, idx) => {
+        if (msg.role === 'user') {
+          return (
+            <div key={idx} className="message-user">
+              {msg.text}
+            </div>
+          );
+        }
+
+        const res = msg.data;
+        if (res.type === 'factual') {
+          return (
+            <div key={idx} className="message-assistant result-card factual-card">
+              <div className="factual-header">
+                <div className="icon-wrapper">
+                  <CheckCircle2 size={24} />
+                </div>
+                <div>
+                  <h3 className="factual-title">{res.title || "Factual Information"}</h3>
+                </div>
+              </div>
+              <div className="factual-content">
+                {res.answer}
+              </div>
+              <div className="factual-footer">
+                <div className="footer-meta">
+                  <Clock size={14} />
+                  <span>Last updated: {res.last_updated ? res.last_updated.split('T')[0] : 'Unknown'}</span>
+                </div>
+                <a href={res.source_url} target="_blank" rel="noreferrer" className="footer-link">
+                  <FileText size={14} />
+                  <span>View Source</span>
+                </a>
+              </div>
+            </div>
+          );
+        } else if (res.type === 'refusal') {
+          return (
+            <div key={idx} className="message-assistant result-card refusal-card">
+              <Info className="refusal-icon" size={20} />
+              <div className="refusal-content">
+                <div className="refusal-title">Advisory Notice</div>
+                <div className="refusal-text">
+                  {res.answer}
+                </div>
+                {res.educational_link && (
+                  <a href={res.educational_link} target="_blank" rel="noreferrer" style={{color: 'var(--warning-text)', fontWeight: 500, fontSize: '0.9rem', marginTop: '0.5rem', textDecoration: 'underline'}}>
+                    Educational Link
+                  </a>
+                )}
+              </div>
+            </div>
+          );
+        }
+        return null;
+      })}
+      <div ref={bottomRef} />
+    </div>
+  );
+};
+
+export default function App() {
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const bottomRef = React.useRef(null);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSearch = async (query) => {
+    const userMsg = { role: 'user', text: query };
+    setMessages((prev) => [...prev, userMsg]);
+    setIsLoading(true);
+    
+    try {
+      const response = await fetch('/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: query })
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setMessages((prev) => [...prev, { role: 'assistant', data }]);
+      } else {
+        setMessages((prev) => [...prev, { role: 'assistant', data: { type: 'refusal', answer: data.detail || "An error occurred." } }]);
+      }
+    } catch (err) {
+      setMessages((prev) => [...prev, { role: 'assistant', data: { type: 'refusal', answer: "Network error. Make sure the backend is running." } }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="app-container">
+      <Header />
+      <DisclaimerBanner />
+      <main className="main-content">
+        {messages.length === 0 && <WelcomeHero />}
+        {messages.length === 0 && <SuggestionChips onSelect={handleSearch} />}
+        <ResultFeed messages={messages} bottomRef={bottomRef} />
+      </main>
+      <SearchBar onSubmit={handleSearch} isLoading={isLoading} />
+    </div>
+  );
 }
-
-export default App
