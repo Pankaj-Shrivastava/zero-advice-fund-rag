@@ -158,7 +158,7 @@ flowchart LR
 
 | Aspect | Detail |
 |--------|--------|
-| **Query embedding** | Same BGE model as ingestion |
+| **Query embedding** | Same BGE model as ingestion (prepend `"Represent this sentence for searching relevant passages: "` to query) |
 | **Search** | Cosine similarity over ChromaDB |
 | **Top-K** | Retrieve top 3–5 chunks |
 | **Metadata filter** | Optionally filter by AMC or scheme if detected in the query |
