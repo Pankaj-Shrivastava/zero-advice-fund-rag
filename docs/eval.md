@@ -302,6 +302,15 @@ def validate_response(response: str) -> dict:
 | 4B.9 | Special characters in question | `POST /api/query {"question": "What's the ₹ expense?"}` | `200` + valid response |
 | 4B.10 | Concurrent requests (5 parallel) | `xargs -P5 -I{} curl ...` | All return valid responses (or rate-limit message) |
 
+### 4C. Supported Funds Endpoint
+
+| # | Test | Request | Expected Response |
+|---|------|---------|-------------------|
+| 4C.1 | Funds list | `GET /api/funds` | `200` + `{ funds: [ { name: "...", type: "..." }, ... ] }` |
+| 4C.2 | Non-empty list | `GET /api/funds` | `funds` array has ≥ 1 entry |
+| 4C.3 | Unique entries | `GET /api/funds` | No duplicate scheme names |
+| 4C.4 | Caching | Call twice, compare response time | Second call significantly faster (cached) |
+
 ### Response Schema Validation
 
 ```python

@@ -1,11 +1,23 @@
 import React, { useState } from 'react';
-import { Landmark, Info, Search, ArrowRight, Loader2, CheckCircle2, Clock, FileText } from 'lucide-react';
+import { Landmark, Info, Search, ArrowRight, Loader2, CheckCircle2, Clock, FileText, MessageSquare, List } from 'lucide-react';
 
-const Header = () => (
+const Header = ({ onReset, onToggleFunds, showFunds, showNewChat }) => (
   <header className="header">
-    <div className="header-logo">
+    <div className="header-logo" onClick={onReset} style={{cursor: 'pointer'}}>
       <Landmark size={24} />
       <span>ZeroAdvice</span>
+    </div>
+    <div className="header-actions">
+      {showNewChat && (
+        <button className="nav-btn" onClick={onReset}>
+          <MessageSquare size={18} />
+          <span className="hide-mobile">New Chat</span>
+        </button>
+      )}
+      <button className="nav-btn" onClick={onToggleFunds}>
+        <List size={18} />
+        <span className="hide-mobile">{showFunds ? 'Back to Chat' : 'Supported Funds'}</span>
+      </button>
     </div>
   </header>
 );
@@ -38,6 +50,49 @@ const WelcomeHero = () => (
     <h1 className="welcome-title">Welcome to ZeroAdvice</h1>
   </div>
 );
+
+const SupportedFunds = () => {
+  const [funds, setFunds] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch('/api/funds')
+      .then(res => res.json())
+      .then(data => {
+        setFunds(data.funds || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
+
+  return (
+    <div className="funds-view">
+      <h2 className="funds-title">Supported Funds</h2>
+      <p className="funds-subtitle">You can ask factual questions about the following mutual funds.</p>
+      
+      {loading ? (
+        <div style={{display: 'flex', justifyContent: 'center', padding: '2rem'}}>
+          <Loader2 className="spinner" size={32} />
+        </div>
+      ) : (
+        <div className="funds-list">
+          {funds.map((f, i) => (
+            <div key={i} className="fund-item">
+              <div className="fund-icon"><Landmark size={20} /></div>
+              <div className="fund-details">
+                <div className="fund-name">{f.name}</div>
+                <div className="fund-type">{f.type}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const SuggestionChips = ({ onSelect }) => {
   const suggestions = [
@@ -162,15 +217,27 @@ const ResultFeed = ({ messages, bottomRef }) => {
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showFunds, setShowFunds] = useState(false);
   const bottomRef = React.useRef(null);
 
   const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!showFunds) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   React.useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, showFunds]);
+
+  const handleReset = () => {
+    setMessages([]);
+    setShowFunds(false);
+  };
+
+  const handleToggleFunds = () => {
+    setShowFunds(!showFunds);
+  };
 
   const handleSearch = async (query) => {
     const userMsg = { role: 'user', text: query };
@@ -198,16 +265,27 @@ export default function App() {
     }
   };
 
+  const showNewChat = messages.length > 0 && !showFunds;
+
   return (
     <div className="app-container">
-      <Header />
+      <Header onReset={handleReset} onToggleFunds={handleToggleFunds} showFunds={showFunds} showNewChat={showNewChat} />
       <DisclaimerBanner />
-      <main className="main-content">
-        {messages.length === 0 && <WelcomeHero />}
-        {messages.length === 0 && <SuggestionChips onSelect={handleSearch} />}
-        <ResultFeed messages={messages} bottomRef={bottomRef} />
-      </main>
-      <SearchBar onSubmit={handleSearch} isLoading={isLoading} />
+      
+      {showFunds ? (
+        <main className="main-content">
+          <SupportedFunds />
+        </main>
+      ) : (
+        <>
+          <main className="main-content">
+            {messages.length === 0 && <WelcomeHero />}
+            {messages.length === 0 && <SuggestionChips onSelect={handleSearch} />}
+            <ResultFeed messages={messages} bottomRef={bottomRef} />
+          </main>
+          <SearchBar onSubmit={handleSearch} isLoading={isLoading} />
+        </>
+      )}
     </div>
   );
 }

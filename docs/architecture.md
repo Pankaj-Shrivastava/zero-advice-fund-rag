@@ -310,6 +310,25 @@ POST /api/query
 }
 ```
 
+### Endpoint — Supported Funds
+
+```
+GET /api/funds
+```
+
+#### Response
+
+```json
+{
+  "funds": [
+    { "name": "ICICI Prudential Large Cap Fund – Direct Growth", "type": "Equity • Large Cap" },
+    { "name": "HDFC Mid-Cap Opportunities Fund – Direct Growth", "type": "Equity • Mid Cap" }
+  ]
+}
+```
+
+> This endpoint dynamically reads `backend/ingestion/parsed_data.json` to extract unique scheme names and categories. Results are cached in memory after the first call.
+
 ---
 
 ## Tech Stack Summary (All Free / Open-Source)
@@ -348,7 +367,8 @@ zero-advice-fund-rag/
 │   │   ├── retriever.py         # Vector similarity search
 │   │   └── generator.py         # LLM prompt + response formatting
 │   ├── api/
-│   │   └── main.py              # FastAPI app (POST /api/query)
+│   │   ├── __init__.py
+│   │   └── main.py              # FastAPI app (POST /api/query, GET /api/funds)
 │   ├── vectorstore/             # Persisted ChromaDB index
 │   ├── config.py                # API keys, model config, thresholds
 │   └── requirements.txt
