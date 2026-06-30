@@ -247,7 +247,7 @@ for doc, meta in zip(results['documents'][0], results['metadatas'][0]):
 | # | Task | Detail |
 |---|------|--------|
 | 2B.1 | **Create `query/retriever.py`** | Embed user query with BGE → search ChromaDB → return top-K chunks |
-| 2B.2 | **Query embedding** | Use same `BAAI/bge-small-en-v1.5` model as ingestion |
+| 2B.2 | **Query embedding** | Use same `BAAI/bge-small-en-v1.5` model as ingestion (prepend `"Represent this sentence for searching relevant passages: "` to query) |
 | 2B.3 | **Similarity search** | Cosine similarity via ChromaDB's `.query()` method |
 | 2B.4 | **Top-K parameter** | Default: **top 3–5 chunks** |
 | 2B.5 | **Metadata filtering** | If a specific AMC or scheme name is detected in the query, apply `where` filter |
