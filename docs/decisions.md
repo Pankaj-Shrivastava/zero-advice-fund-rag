@@ -172,3 +172,15 @@ Each entry follows this structure:
 | **Decision** | Cache the funds list in `sessionStorage` with a 24-hour TTL. On load, check cache first; only call the API if cache is missing or expired. |
 | **Rationale** | `sessionStorage` is scoped to the browser tab — it naturally clears when the tab/browser closes (meeting the "until browser is open" requirement). The 24-hour TTL ensures that even a long-lived tab eventually picks up newly ingested funds. No risk of serving stale data across separate sessions since `sessionStorage` doesn't persist across tabs or restarts. |
 | **Impact** | `frontend/src/App.jsx` (SupportedFunds component) |
+
+---
+
+## DEC-014 — Client-Side Context Tracking for Follow-Up Questions
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-30 |
+| **Context** | Users wanted to ask follow-up questions (e.g., "What about AUM?") without re-typing the fund name. |
+| **Decision** | Implement client-side session context. The backend remains completely stateless. The `POST /api/query` response returns a `context_fund` field (extracted from the retrieved ChromaDB chunks). The frontend stores this in `activeFundContext` and passes it back in the next request body. |
+| **Rationale** | Keeps the backend perfectly RESTful, stateless, and scalable. Prevents the need for a database to store user sessions or chat histories. The backend uses the provided `context_fund` to augment the query ("{query} for {context_fund}") and apply a ChromaDB metadata filter, overriding it only if the user explicitly types a different AMC name. |
+| **Impact** | `frontend/src/App.jsx`, `backend/api/main.py`, `backend/query/retriever.py` |

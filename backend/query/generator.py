@@ -98,7 +98,8 @@ def generate_answer(query: str, chunks: list) -> dict:
         "type": "factual",
         "answer": answer_text,
         "source_url": primary_chunk.get("source_url"),
-        "last_updated": primary_chunk.get("scraped_at")
+        "last_updated": primary_chunk.get("scraped_at"),
+        "context_fund": primary_chunk.get("scheme")
     }
 
 if __name__ == "__main__":

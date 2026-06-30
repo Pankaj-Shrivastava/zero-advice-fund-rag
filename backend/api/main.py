@@ -7,6 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from typing import Optional
 
 # Ensure project root is in sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
@@ -48,6 +49,7 @@ app.add_middleware(
 
 class QueryRequest(BaseModel):
     question: str = Field(..., max_length=250, min_length=1, description="User's query")
+    context_fund: Optional[str] = Field(default=None, description="The fund scheme from the previous turn context")
 
 @app.get("/api/health")
 async def health_check():
@@ -59,7 +61,7 @@ async def query_endpoint(req: QueryRequest):
         if not req.question or not req.question.strip():
             raise HTTPException(status_code=400, detail="Query cannot be empty.")
             
-        result = process_query(req.question.strip())
+        result = process_query(req.question.strip(), req.context_fund)
         
         # If pipeline returned an error structure
         if result.get("status") == "error":

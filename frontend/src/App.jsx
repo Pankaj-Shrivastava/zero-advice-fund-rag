@@ -235,6 +235,7 @@ export default function App() {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showFunds, setShowFunds] = useState(false);
+  const [activeFundContext, setActiveFundContext] = useState(null);
   const bottomRef = React.useRef(null);
 
   const scrollToBottom = () => {
@@ -250,6 +251,7 @@ export default function App() {
   const handleReset = () => {
     setMessages([]);
     setShowFunds(false);
+    setActiveFundContext(null);
   };
 
   const handleToggleFunds = () => {
@@ -265,12 +267,15 @@ export default function App() {
       const response = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: query })
+        body: JSON.stringify({ question: query, context_fund: activeFundContext })
       });
       
       const data = await response.json();
       
       if (response.ok) {
+        if (data.context_fund) {
+          setActiveFundContext(data.context_fund);
+        }
         setMessages((prev) => [...prev, { role: 'assistant', data }]);
       } else {
         setMessages((prev) => [...prev, { role: 'assistant', data: { type: 'refusal', answer: data.detail || "An error occurred." } }]);

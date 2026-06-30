@@ -421,11 +421,11 @@ Please try rephrasing, or visit the fund page directly for details.
 
 | # | Task | Detail |
 |---|------|--------|
-| 4B.1 | **`POST /api/query`** | Accept `{ "question": "..." }`, return formatted response |
+| 4B.1 | **`POST /api/query`** | Accept `{ "question": "...", "context_fund": "..." }`, return formatted response |
 | 4B.2 | **Request validation** | Reject empty questions, enforce max length |
-| 4B.3 | **Wire to pipeline** | `request.question` → `process_query()` → `generate()` → JSON response |
+| 4B.3 | **Wire to pipeline** | `request` → `process_query(q, ctx)` → `generate()` → JSON response |
 | 4B.4 | **Error handling** | Graceful handling of Groq API errors, ChromaDB failures |
-| 4B.5 | **Response schema** | Factual: `{ status, type, answer, source_url, last_updated }`; Refusal: `{ status, type, answer, educational_link }` |
+| 4B.5 | **Response schema** | Factual: `{ status, type, answer, source_url, last_updated, context_fund }` |
 | 4B.6 | **`GET /api/funds`** | Read `parsed_data.json`, extract unique scheme names + categories, cache in memory, return `{ funds: [...] }` |
 
 **Key file:** [main.py](file:///c:/Users/panka/Documents/Pankaj_CodeSpace/AI_Projects/zero-advice-fund-rag/backend/api/main.py) *(to be created)*
@@ -507,9 +507,10 @@ curl -X POST http://localhost:8000/api/query \
 | 5D.1 | **Sticky search bar** | Search input pinned to bottom of viewport (chat-style layout) |
 | 5D.2 | **Scrollable history** | Message feed scrolls with hidden scrollbar; auto-scroll on new messages |
 | 5D.3 | **User message bubbles** | User queries shown as blue right-aligned bubbles |
-| 5D.4 | **New Chat button** | Visible only after a conversation starts; resets chat state |
+| 5D.4 | **New Chat button** | Visible only after a conversation starts; resets chat state and clears context |
 | 5D.5 | **Supported Funds view** | Toggle via header button; fetches fund list from `GET /api/funds` dynamically |
 | 5D.6 | **Persistent disclaimer** | "Facts-only. No investment advice." banner always visible below header |
+| 5D.7 | **Contextual memory** | Store `context_fund` from responses and pass it in subsequent query requests |
 
 ### Phase 5 — Exit Criteria
 

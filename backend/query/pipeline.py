@@ -8,7 +8,7 @@ from backend.query.retriever import retrieve
 from backend.query.generator import generate_answer
 from backend.query.refusal import get_advisory_refusal, get_pii_refusal, get_no_context_refusal
 
-def process_query(question: str) -> dict:
+def process_query(question: str, context_fund: str = None) -> dict:
     if not question or not question.strip():
         return {"status": "error", "type": "error", "answer": "Query cannot be empty."}
         
@@ -25,7 +25,7 @@ def process_query(question: str) -> dict:
         return {"status": "error", "type": "error", "answer": classification.get("message", "Error classifying query")}
         
     # 2. Retrieval (only for FACTUAL)
-    retrieved_chunks = retrieve(question, top_k=3)
+    retrieved_chunks = retrieve(question, context_fund=context_fund, top_k=3)
     
     if not retrieved_chunks:
         return get_no_context_refusal()

@@ -50,15 +50,22 @@ def extract_metadata_filter(query: str) -> dict:
     
     return {}
 
-def retrieve(query: str, top_k: int = 3) -> list:
+def retrieve(query: str, context_fund: str = None, top_k: int = 3) -> list:
     model = get_model()
     collection = get_collection()
     
-    # Prepend BGE query prefix
-    query_text = "Represent this sentence for searching relevant passages: " + query
-    query_emb = model.encode([query_text], normalize_embeddings=True).tolist()
-    
     where_filter = extract_metadata_filter(query)
+    
+    query_text_to_embed = query
+    
+    # If a context fund is provided and the user didn't explicitly mention a new AMC in this turn
+    if context_fund and not where_filter:
+        where_filter = {"scheme": context_fund}
+        query_text_to_embed = f"{query} for {context_fund}"
+    
+    # Prepend BGE query prefix
+    query_text = "Represent this sentence for searching relevant passages: " + query_text_to_embed
+    query_emb = model.encode([query_text], normalize_embeddings=True).tolist()
     
     # Query ChromaDB
     kwargs = {
