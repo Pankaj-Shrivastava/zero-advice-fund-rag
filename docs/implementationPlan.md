@@ -300,7 +300,7 @@ for r in results:
 | 3A.3 | **Initialize Groq client** | Load API key from `.env` / environment variable |
 | 3A.4 | **Model selection** | Primary: `llama-3.3-70b-versatile`; Fallback: `mixtral-8x7b-32768` |
 | 3A.5 | **Basic generation test** | Send a simple prompt, verify response is returned |
-| 3A.6 | **Rate limit handling** | Implement retry with exponential backoff for Groq free tier limits |
+| 3A.6 | **Rate limit handling** | Implement retry with exponential backoff (e.g., tenacity) handling 30 RPM, 1K RPD, 12K TPM limits |
 
 **Key file:** [generator.py](file:///c:/Users/panka/Documents/Pankaj_CodeSpace/AI_Projects/zero-advice-fund-rag/backend/query/generator.py) *(to be created)*
 
