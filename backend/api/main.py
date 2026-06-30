@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import json
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
@@ -71,3 +72,33 @@ async def query_endpoint(req: QueryRequest):
     except Exception as e:
         logger.error(f"Error processing query: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred while processing the query.")
+
+FUNDS_CACHE = []
+
+def load_funds():
+    global FUNDS_CACHE
+    if not FUNDS_CACHE:
+        try:
+            file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../ingestion/parsed_data.json'))
+            if os.path.exists(file_path):
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    
+                unique_funds = {}
+                for item in data:
+                    scheme = item.get("scheme")
+                    if scheme and scheme not in unique_funds:
+                        category = item.get("category", "Mutual Fund")
+                        unique_funds[scheme] = f"Equity • {category}" if "Cap" in category else category
+                        
+                FUNDS_CACHE = [{"name": k, "type": v} for k, v in unique_funds.items()]
+            else:
+                logger.error(f"parsed_data.json not found at {file_path}")
+        except Exception as e:
+            logger.error(f"Error loading funds: {e}")
+    return FUNDS_CACHE
+
+@app.get("/api/funds")
+async def get_funds_endpoint():
+    funds = load_funds()
+    return {"funds": funds}

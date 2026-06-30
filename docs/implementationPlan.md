@@ -426,6 +426,7 @@ Please try rephrasing, or visit the fund page directly for details.
 | 4B.3 | **Wire to pipeline** | `request.question` → `process_query()` → `generate()` → JSON response |
 | 4B.4 | **Error handling** | Graceful handling of Groq API errors, ChromaDB failures |
 | 4B.5 | **Response schema** | Factual: `{ status, type, answer, source_url, last_updated }`; Refusal: `{ status, type, answer, educational_link }` |
+| 4B.6 | **`GET /api/funds`** | Read `parsed_data.json`, extract unique scheme names + categories, cache in memory, return `{ funds: [...] }` |
 
 **Key file:** [main.py](file:///c:/Users/panka/Documents/Pankaj_CodeSpace/AI_Projects/zero-advice-fund-rag/backend/api/main.py) *(to be created)*
 
@@ -452,6 +453,7 @@ curl -X POST http://localhost:8000/api/query \
 
 - ✅ FastAPI server starts and serves `GET /api/health`
 - ✅ `POST /api/query` returns factual answers with citations
+- ✅ `GET /api/funds` returns dynamic list of supported funds from ingested data
 - ✅ Advisory queries return polite refusals
 - ✅ CORS allows React dev server origin
 - ✅ Models loaded once at startup, not per-request
@@ -498,6 +500,17 @@ curl -X POST http://localhost:8000/api/query \
 | 5C.4 | **Render refusal responses** | Display refusal message + educational link |
 | 5C.5 | **Error handling** | Network errors, server errors → user-friendly error message |
 
+### Phase 5D — Chatbot Layout & Navigation
+
+| # | Task | Detail |
+|---|------|--------|
+| 5D.1 | **Sticky search bar** | Search input pinned to bottom of viewport (chat-style layout) |
+| 5D.2 | **Scrollable history** | Message feed scrolls with hidden scrollbar; auto-scroll on new messages |
+| 5D.3 | **User message bubbles** | User queries shown as blue right-aligned bubbles |
+| 5D.4 | **New Chat button** | Visible only after a conversation starts; resets chat state |
+| 5D.5 | **Supported Funds view** | Toggle via header button; fetches fund list from `GET /api/funds` dynamically |
+| 5D.6 | **Persistent disclaimer** | "Facts-only. No investment advice." banner always visible below header |
+
 ### Phase 5 — Exit Criteria
 
 - ✅ Welcome screen displays with intro + 3 example questions
@@ -506,6 +519,10 @@ curl -X POST http://localhost:8000/api/query \
 - ✅ Refusal responses render with educational link
 - ✅ Disclaimer banner is always visible
 - ✅ UI is responsive, clean, and professional
+- ✅ Search bar is sticky at the bottom (chatbot style)
+- ✅ Chat history is scrollable with hidden scrollbar
+- ✅ "New Chat" button only appears during active conversation
+- ✅ Supported Funds view dynamically populated from backend
 
 ---
 
@@ -562,7 +579,7 @@ curl -X POST http://localhost:8000/api/query \
 | 2C | `backend/query/pipeline.py` | Unified classify → retrieve pipeline |
 | 3A | `backend/query/generator.py` | Groq LLM integration |
 | 3C | `backend/query/refusal.py` | Refusal message templates |
-| 4 | `backend/api/main.py` | FastAPI app (`POST /api/query`) |
+| 4 | `backend/api/main.py` | FastAPI app (`POST /api/query`, `GET /api/funds`) |
 | 5A | `frontend/src/index.css` | Design system (colors, fonts, layout) |
 | 5B | `frontend/src/App.jsx` | Root component |
 | 5B | `frontend/src/components/DisclaimerBanner.jsx` | Disclaimer banner |

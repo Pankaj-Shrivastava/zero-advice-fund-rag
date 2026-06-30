@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <title>ZeroAdvice</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+                rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+                rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        <script id="tailwind-config">
+                tailwind.config = {
+                        darkMode: "class",
+                        theme: {
+                                extend: {
+                                        "colors": {
+                                                "inverse-primary": "#adc6ff",
+                                                "on-secondary": "#ffffff",
+                                                "background": "#f9f9ff",
+                                                "primary-fixed": "#d8e2ff",
+                                                "surface-tint": "#005bc1",
+                                                "on-tertiary-fixed-variant": "#5715bd",
+                                                "on-surface": "#181c23",
+                                                "surface-container": "#ecedf9",
+                                                "surface-bright": "#f9f9ff",
+                                                "surface-variant": "#e0e2ed",
+                                                "on-secondary-container": "#006f6a",
+                                                "on-primary": "#ffffff",
+                                                "on-tertiary-container": "#fffbff",
+                                                "secondary-fixed": "#65f8f0",
+                                                "inverse-on-surface": "#eef0fc",
+                                                "on-secondary-fixed-variant": "#00504d",
+                                                "surface-container-low": "#f1f3fe",
+                                                "tertiary-container": "#8654ee",
+                                                "surface-container-highest": "#e0e2ed",
+                                                "tertiary-fixed-dim": "#d1bcff",
+                                                "outline-variant": "#c1c6d7",
+                                                "on-primary-container": "#fefcff",
+                                                "primary-fixed-dim": "#adc6ff",
+                                                "surface-container-high": "#e6e8f3",
+                                                "on-surface-variant": "#414755",
+                                                "error": "#ba1a1a",
+                                                "on-error-container": "#93000a",
+                                                "tertiary-fixed": "#eaddff",
+                                                "on-primary-fixed-variant": "#004493",
+                                                "surface": "#f9f9ff",
+                                                "on-error": "#ffffff",
+                                                "on-primary-fixed": "#001a41",
+                                                "on-tertiary-fixed": "#24005b",
+                                                "primary": "#0058bc",
+                                                "secondary-container": "#61f5ed",
+                                                "primary-container": "#0070eb",
+                                                "outline": "#717786",
+                                                "inverse-surface": "#2d3039",
+                                                "on-tertiary": "#ffffff",
+                                                "secondary": "#006a66",
+                                                "on-secondary-fixed": "#00201e",
+                                                "tertiary": "#6d37d3",
+                                                "secondary-fixed-dim": "#3fdbd4",
+                                                "on-background": "#181c23",
+                                                "surface-container-lowest": "#ffffff",
+                                                "error-container": "#ffdad6",
+                                                "surface-dim": "#d8d9e5"
+                                        },
+                                        "borderRadius": {
+                                                "DEFAULT": "0.25rem",
+                                                "lg": "0.5rem",
+                                                "xl": "0.75rem",
+                                                "full": "9999px"
+                                        },
+                                        "spacing": {
+                                                "container-max-width": "1120px",
+                                                "gutter": "24px",
+                                                "margin-desktop": "64px",
+                                                "margin-mobile": "20px",
+                                                "section-gap": "80px",
+                                                "unit": "8px"
+                                        },
+                                        "fontFamily": {
+                                                "headline-md": [
+                                                        "Inter"
+                                                ],
+                                                "label-md": [
+                                                        "Inter"
+                                                ],
+                                                "body-md": [
+                                                        "Inter"
+                                                ],
+                                                "headline-xl": [
+                                                        "Inter"
+                                                ],
+                                                "label-sm": [
+                                                        "Inter"
+                                                ],
+                                                "headline-lg-mobile": [
+                                                        "Inter"
+                                                ],
+                                                "headline-lg": [
+                                                        "Inter"
+                                                ],
+                                                "body-lg": [
+                                                        "Inter"
+                                                ]
+                                        },
+                                        "fontSize": {
+                                                "headline-md": [
+                                                        "24px",
+                                                        {
+                                                                "lineHeight": "32px",
+                                                                "fontWeight": "600"
+                                                        }
+                                                ],
+                                                "label-md": [
+                                                        "14px",
+                                                        {
+                                                                "lineHeight": "20px",
+                                                                "letterSpacing": "0.05em",
+                                                                "fontWeight": "600"
+                                                        }
+                                                ],
+                                                "body-md": [
+                                                        "16px",
+                                                        {
+                                                                "lineHeight": "24px",
+                                                                "fontWeight": "400"
+                                                        }
+                                                ],
+                                                "headline-xl": [
+                                                        "48px",
+                                                        {
+                                                                "lineHeight": "56px",
+                                                                "letterSpacing": "-0.02em",
+                                                                "fontWeight": "700"
+                                                        }
+                                                ],
+                                                "label-sm": [
+                                                        "12px",
+                                                        {
+                                                                "lineHeight": "16px",
+                                                                "fontWeight": "500"
+                                                        }
+                                                ],
+                                                "headline-lg-mobile": [
+                                                        "28px",
+                                                        {
+                                                                "lineHeight": "34px",
+                                                                "letterSpacing": "-0.01em",
+                                                                "fontWeight": "600"
+                                                        }
+                                                ],
+                                                "headline-lg": [
+                                                        "32px",
+                                                        {
+                                                                "lineHeight": "40px",
+                                                                "letterSpacing": "-0.01em",
+                                                                "fontWeight": "600"
+                                                        }
+                                                ],
+                                                "body-lg": [
+                                                        "18px",
+                                                        {
+                                                                "lineHeight": "28px",
+                                                                "fontWeight": "400"
+                                                        }
+                                                ]
+                                        }
+                                },
+                        }
+                }
+        </script>
+        <style>
+                /* Ambient Background Texture */
+                body {
+                        background-color: theme('colors.background');
+                }
+
+                /* Ambient Glow for Cards */
+                .ambient-glow::before {
+                        content: '';
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        width: 120%;
+                        height: 120%;
+                        background: radial-gradient(circle, rgba(0, 194, 187, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+                        z-index: -1;
+                        border-radius: 50%;
+                        pointer-events: none;
+                }
+
+                .glass-card {
+                        background: rgba(255, 255, 255, 0.85);
+                        backdrop-filter: blur(16px);
+                        -webkit-backdrop-filter: blur(16px);
+                }
+        </style>
+</head>
+
+<body
+        class="text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+        <!-- Top Navigation (Shell) -->
+        <nav
+                class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+                <div
+                        class="flex justify-center items-center px-margin-desktop h-16 w-full max-w-container-max-width mx-auto">
+                        <!-- Brand -->
+                        <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-[28px]"
+                                        data-icon="account_balance">account_balance</span>
+                                <span
+                                        class="text-headline-md font-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight">ZeroAdvice</span>
+                        </div>
+                </div>
+        </nav>
+        <!-- Main Content Area -->
+        <main
+                class="flex-grow pt-32 pb-24 px-margin-mobile md:px-margin-desktop w-full max-w-container-max-width mx-auto relative z-10">
+                <!-- Search Section -->
+                <section class="max-w-3xl mx-auto text-center mb-16 relative">
+                        <h1
+                                class="text-headline-lg-mobile md:text-headline-xl font-headline-lg-mobile md:font-headline-xl text-on-surface mb-6 tracking-tight">
+                                Welcome to ZeroAdvice</h1>
+                        <div
+                                class="inline-flex items-center justify-center bg-error-container/50 text-[#92400E] border border-[#F59E0B]/30 px-6 py-2 rounded-full text-label-md font-label-md mb-10 shadow-sm">
+                                <span class="material-symbols-outlined text-[18px] mr-2" data-icon="info">info</span>
+                                Facts-only. No investment advice.
+                        </div>
+                        <!-- Search Bar -->
+                        <div class="relative group mx-auto max-w-2xl mb-12">
+                                <div
+                                        class="absolute -inset-1 bg-gradient-to-r from-secondary to-tertiary rounded-[26px] blur opacity-30 group-hover:opacity-50 transition duration-1000 group-hover:duration-200">
+                                </div>
+                                <div
+                                        class="relative flex items-center bg-surface-container-lowest rounded-xl h-[64px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-outline-variant/30 px-6 transition-transform focus-within:scale-[1.01]">
+                                        <span class="material-symbols-outlined text-outline text-[28px] mr-4"
+                                                data-icon="search">search</span>
+                                        <input aria-label="Search FAQ"
+                                                class="w-full bg-transparent border-none focus:ring-0 text-body-lg font-body-lg text-on-surface placeholder-on-surface-variant/50 outline-none"
+                                                placeholder="What is the typical expense ratio for an actively managed large-cap fund?"
+                                                type="text"
+                                                value="What are the average management fees for an index fund?" />
+                                        <button
+                                                class="ml-4 p-2 bg-primary/5 hover:bg-primary/10 rounded-lg text-primary transition-colors flex items-center justify-center">
+                                                <span class="material-symbols-outlined text-[24px]"
+                                                        data-icon="arrow_forward">arrow_forward</span>
+                                        </button>
+                                </div>
+                        </div>
+                        <!-- Try asking about -->
+                        <div class="max-w-2xl mx-auto text-center">
+                                <p
+                                        class="text-label-md font-label-md text-on-surface-variant mb-4 uppercase tracking-wider">
+                                        Try asking about:</p>
+                                <div class="flex flex-wrap justify-center gap-3">
+                                        <button
+                                                class="bg-surface border border-outline-variant/30 hover:border-primary/40 hover:bg-surface-container-low px-5 py-2.5 rounded-full text-label-md font-label-md text-on-surface transition-all shadow-sm">What
+                                                is an Expense Ratio?</button>
+                                        <button
+                                                class="bg-surface border border-outline-variant/30 hover:border-primary/40 hover:bg-surface-container-low px-5 py-2.5 rounded-full text-label-md font-label-md text-on-surface transition-all shadow-sm">Explain
+                                                12b-1 fees.</button>
+                                        <button
+                                                class="bg-surface border border-outline-variant/30 hover:border-primary/40 hover:bg-surface-container-low px-5 py-2.5 rounded-full text-label-md font-label-md text-on-surface transition-all shadow-sm">How
+                                                do index fund management fees work?</button>
+                                </div>
+                        </div>
+                </section>
+                <!-- Results Section -->
+                <section class="max-w-4xl mx-auto space-y-6 relative">
+                        <!-- Background Ambient Glow for Results -->
+                        <div class="ambient-glow"></div>
+                        <!-- Card 1: Factual Answer (Glassmorphic) -->
+                        <div
+                                class="glass-card rounded-[24px] border border-outline-variant/20 shadow-[0_4px_24px_rgba(0,0,0,0.04)] p-8 transition-all hover:border-primary/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] group relative overflow-hidden">
+                                <!-- Subtle Top Highlight -->
+                                <div
+                                        class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-80">
+                                </div>
+                                <div class="flex items-start gap-4">
+                                        <div class="flex-shrink-0 mt-1">
+                                                <div
+                                                        class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                                        <span class="material-symbols-outlined text-[20px]"
+                                                                data-icon="check_circle">check_circle</span>
+                                                </div>
+                                        </div>
+                                        <div class="flex-grow">
+                                                <h3 class="text-headline-md font-headline-md text-on-surface mb-3">Index
+                                                        Fund Management Fees</h3>
+                                                <p
+                                                        class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed mb-6">
+                                                        Index funds are designed to passively track a market index,
+                                                        resulting in significantly lower management overhead compared to
+                                                        actively managed funds. Consequently, the average expense ratio
+                                                        for an index mutual fund typically ranges between <strong
+                                                                class="text-on-surface font-semibold">0.05% and
+                                                                0.20%</strong> annually. Some highly competitive funds
+                                                        may offer expense ratios as low as 0.00% or 0.015%.
+                                                </p>
+                                                <!-- Footer / Citation area -->
+                                                <div
+                                                        class="flex items-center justify-between pt-4 border-t border-outline-variant/20">
+                                                        <div
+                                                                class="flex items-center gap-2 text-label-sm font-label-sm text-outline">
+                                                                <span class="material-symbols-outlined text-[16px]"
+                                                                        data-icon="update">update</span>
+                                                                Last updated: Oct 2023
+                                                        </div>
+                                                        <a class="inline-flex items-center gap-1 text-primary hover:text-primary-container text-label-md font-label-md transition-colors group-hover:underline decoration-primary/30 underline-offset-4"
+                                                                href="#">
+                                                                <span class="material-symbols-outlined text-[16px]"
+                                                                        data-icon="description">description</span>
+                                                                View SEC Filings
+                                                        </a>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                        <!-- Card 2: Refusal / Advisory Card (Amber Tint) -->
+                        <div
+                                class="rounded-[24px] bg-gradient-to-br from-[#FFF8F0] to-white border border-[#F59E0B]/30 shadow-sm p-6 flex items-start gap-4 transition-all hover:shadow-md relative overflow-hidden">
+                                <!-- Micro-gradient accent bar -->
+                                <div
+                                        class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-[#F59E0B] to-[#D97706]">
+                                </div>
+                                <div class="flex-shrink-0 mt-1">
+                                        <div
+                                                class="w-8 h-8 rounded-full bg-[#F59E0B]/10 flex items-center justify-center text-[#D97706]">
+                                                <span class="material-symbols-outlined text-[18px]"
+                                                        data-icon="info">info</span>
+                                        </div>
+                                </div>
+                                <div>
+                                        <h4 class="text-label-md font-label-md font-semibold text-[#92400E] mb-1">
+                                                Advisory Notice</h4>
+                                        <p class="text-body-md font-body-md text-[#B45309] leading-snug">
+                                                ZeroAdvice provides generalized data and factual information regarding
+                                                financial instruments. We cannot provide personalized financial, legal,
+                                                or tax advice. Please consult with a certified financial advisor or tax
+                                                professional before making investment decisions based on fee structures.
+                                        </p>
+                                </div>
+                        </div>
+                </section>
+        </main>
+        <!-- Footer -->
+        <footer
+                class="w-full py-12 mt-section-gap border-t border-outline-variant/20 bg-surface dark:bg-on-surface z-10 relative">
+                <div
+                        class="flex flex-col md:flex-row justify-between items-center px-margin-desktop max-w-container-max-width mx-auto gap-gutter text-on-surface-variant dark:text-outline-variant text-label-sm font-label-sm">
+                        <div
+                                class="flex items-center gap-2 text-label-md font-label-md font-bold text-on-surface dark:text-surface">
+                                <span class="material-symbols-outlined text-[20px]"
+                                        data-icon="account_balance">account_balance</span>
+                                <span>ZeroAdvice</span>
+                        </div>
+                        <div class="flex gap-6 flex-wrap justify-center">
+                                <a class="hover:text-primary dark:hover:text-inverse-primary transition-colors opacity-80 hover:opacity-100"
+                                        href="#">Privacy Policy</a>
+                                <a class="hover:text-primary dark:hover:text-inverse-primary transition-colors opacity-80 hover:opacity-100"
+                                        href="#">Terms of Service</a>
+                        </div>
+                        <div class="opacity-80">
+                                © 2026 ZeroAdvice. All rights reserved.
+                        </div>
+                </div>
+        </footer>
+</body>
+
+</html>
