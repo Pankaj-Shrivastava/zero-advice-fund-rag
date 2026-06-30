@@ -56,10 +56,27 @@ const SupportedFunds = () => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
+    const CACHE_KEY = 'zeroadvice_funds';
+    const MAX_AGE_MS = 24 * 60 * 60 * 1000; // 1 day
+
+    try {
+      const cached = sessionStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < MAX_AGE_MS) {
+          setFunds(data);
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (e) { /* ignore parse errors */ }
+
     fetch('/api/funds')
       .then(res => res.json())
       .then(data => {
-        setFunds(data.funds || []);
+        const fundsList = data.funds || [];
+        setFunds(fundsList);
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: fundsList, timestamp: Date.now() }));
         setLoading(false);
       })
       .catch(err => {

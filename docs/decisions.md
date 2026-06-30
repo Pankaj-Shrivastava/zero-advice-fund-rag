@@ -160,3 +160,15 @@ Each entry follows this structure:
 | **Decision** | Replace with fund-specific questions that directly map to data in `parsed_data.json`: (1) "What is the expense ratio of ICICI Prudential Large Cap Fund?" (2) "What is the exit load for HDFC Mid-Cap Opportunities Fund?" (3) "What are the top holdings of ICICI Prudential Flexicap Fund?" |
 | **Rationale** | These questions target specific sections (`expense_ratio`, `exit_load`, `holdings`) of specific funds in our corpus, guaranteeing a high-quality factual response on the very first click. This showcases the system's capability immediately and builds user confidence. |
 | **Impact** | `frontend/src/App.jsx` (SuggestionChips component) |
+
+---
+
+## DEC-013 — Cache Supported Funds in Browser (sessionStorage + 24h TTL)
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-06-30 |
+| **Context** | The Supported Funds view fetches from `GET /api/funds` every time the user toggles to it. The fund list rarely changes (only after a new ingestion run), so hitting the backend repeatedly is wasteful. |
+| **Decision** | Cache the funds list in `sessionStorage` with a 24-hour TTL. On load, check cache first; only call the API if cache is missing or expired. |
+| **Rationale** | `sessionStorage` is scoped to the browser tab — it naturally clears when the tab/browser closes (meeting the "until browser is open" requirement). The 24-hour TTL ensures that even a long-lived tab eventually picks up newly ingested funds. No risk of serving stale data across separate sessions since `sessionStorage` doesn't persist across tabs or restarts. |
+| **Impact** | `frontend/src/App.jsx` (SupportedFunds component) |
