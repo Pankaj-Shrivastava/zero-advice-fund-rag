@@ -41,8 +41,13 @@ gantt
     Frontend-Backend Integration          :p5c, after p5b, 2d
 
     section Phase 6
-    End-to-End Testing                    :p6a, after p5c, 2d
-    Polish & Documentation                :p6b, after p6a, 2d
+    GitHub Actions Workflow               :p6a, after p5c, 1d
+    Ingestion Entry Point Script          :p6b, after p6a, 1d
+    Notifications & Monitoring            :p6c, after p6b, 1d
+
+    section Phase 7
+    End-to-End Testing                    :p7a, after p6c, 2d
+    Polish & Documentation                :p7b, after p7a, 2d
 ```
 
 | Phase | Name | Focus | Key Deliverable |
@@ -53,7 +58,8 @@ gantt
 | **3** | Generation Pipeline | Groq LLM → Format response → Refusal handler | Factual answer or polite refusal |
 | **4** | Backend API | FastAPI server exposing `POST /api/query` | Working REST API |
 | **5** | Frontend UI | React chat interface with Vite | Complete user-facing app |
-| **6** | Testing & Polish | E2E testing, edge cases, documentation | Production-ready system |
+| **6** | Scheduler | GitHub Actions cron to trigger daily ingestion | Auto-refreshed fund data at 10:30 AM IST |
+| **7** | Testing & Polish | E2E testing, edge cases, documentation | Production-ready system |
 
 ---
 
@@ -527,11 +533,105 @@ curl -X POST http://localhost:8000/api/query \
 
 ---
 
-## Phase 6 — Testing, Polish & Documentation
+## Phase 6 — Scheduler (GitHub Actions)
+
+> **Goal:** Automate the ingestion pipeline to run daily at 10:30 AM IST using GitHub Actions cron, ensuring the RAG system always serves fresh fund data.
+
+### Phase 6A — GitHub Actions Workflow
+
+| # | Task | Detail |
+|---|------|--------|
+| 6A.1 | **Create `.github/workflows/daily-ingestion.yml`** | Cron-triggered workflow to run the full ingestion pipeline |
+| 6A.2 | **Cron schedule** | `0 5 * * *` (05:00 UTC = 10:30 AM IST); runs daily |
+| 6A.3 | **Manual dispatch** | Add `workflow_dispatch` trigger for on-demand runs |
+| 6A.4 | **Environment setup** | `ubuntu-latest` runner, Python 3.11+, install dependencies from `requirements.txt` |
+| 6A.5 | **Secrets configuration** | Store `GROQ_API_KEY` as a GitHub Actions secret |
+| 6A.6 | **Playwright setup** | Install Playwright browsers in the CI environment |
+
+**Key file:** `.github/workflows/daily-ingestion.yml` *(to be created)*
+
+#### Workflow Structure
+
+```yaml
+name: Daily Ingestion Pipeline
+on:
+  schedule:
+    - cron: '0 5 * * *'  # 05:00 UTC = 10:30 AM IST
+  workflow_dispatch:       # Manual trigger
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r backend/requirements.txt
+      - name: Install Playwright browsers
+        run: playwright install chromium
+      - name: Run ingestion pipeline
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python -m backend.scripts.run_ingestion
+      - name: Commit updated vectorstore
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add backend/vectorstore/ backend/ingestion/parsed_data.json
+          git diff --cached --quiet || git commit -m "chore: daily ingestion update [skip ci]"
+          git push
+```
+
+---
+
+### Phase 6B — Ingestion Entry Point Script
+
+| # | Task | Detail |
+|---|------|--------|
+| 6B.1 | **Create `backend/scripts/run_ingestion.py`** | Single entry point that orchestrates the full ingestion pipeline |
+| 6B.2 | **Pipeline orchestration** | Call scrape → parse → chunk → embed in sequence |
+| 6B.3 | **Logging** | Structured logging with timestamps for CI output visibility |
+| 6B.4 | **Exit codes** | Exit 0 on success, exit 1 on failure (for GitHub Actions status) |
+| 6B.5 | **Partial failure handling** | If some URLs fail, continue with the rest and log warnings |
+
+**Key file:** [run_ingestion.py](file:///c:/Users/panka/Documents/Pankaj_CodeSpace/AI_Projects/zero-advice-fund-rag/backend/scripts/run_ingestion.py) *(to be created)*
+
+#### Validation
+```bash
+# Run locally to test the full pipeline
+python -m backend.scripts.run_ingestion
+# Should output: "Ingestion complete: scraped N pages, generated M chunks, indexed in ChromaDB"
+```
+
+---
+
+### Phase 6C — Notifications & Monitoring
+
+| # | Task | Detail |
+|---|------|--------|
+| 6C.1 | **GitHub Actions status badge** | Add workflow status badge to `README.md` |
+| 6C.2 | **Email notifications** | GitHub Actions sends email on workflow failure (enabled by default) |
+| 6C.3 | **Workflow run logs** | Ingestion logs visible in the GitHub Actions "Actions" tab |
+
+### Phase 6 — Exit Criteria
+
+- ✅ GitHub Actions workflow file created and valid
+- ✅ Cron schedule triggers daily at 05:00 UTC (10:30 AM IST)
+- ✅ Manual `workflow_dispatch` trigger works
+- ✅ Full ingestion pipeline runs successfully in CI
+- ✅ Updated vectorstore is committed back to the repository
+- ✅ Workflow failures send email notifications
+- ✅ `run_ingestion.py` works locally and in CI
+
+---
+
+## Phase 7 — Testing, Polish & Documentation
 
 > **Goal:** Validate the full system end-to-end, fix edge cases, and write documentation.
 
-### Phase 6A — End-to-End Testing
+### Phase 7A — End-to-End Testing
 
 | # | Test | Detail |
 |---|------|--------|
@@ -543,7 +643,7 @@ curl -X POST http://localhost:8000/api/query \
 | 6A.6 | **Edge cases** | Empty query, gibberish, very long query, query about a fund not in corpus |
 | 6A.7 | **Cross-AMC queries** | "Compare expense ratios" → should refuse (performance comparison) |
 
-### Phase 6B — Polish & Documentation
+### Phase 7B — Polish & Documentation
 
 | # | Task | Detail |
 |---|------|--------|
@@ -553,7 +653,7 @@ curl -X POST http://localhost:8000/api/query \
 | 6B.4 | **Error messages** | User-friendly fallbacks for all failure modes |
 | 6B.5 | **Code cleanup** | Remove debug prints, add docstrings, format with black/prettier |
 
-### Phase 6 — Exit Criteria
+### Phase 7 — Exit Criteria
 
 - ✅ All factual queries return accurate, cited answers
 - ✅ All advisory/PII queries are properly refused
@@ -589,7 +689,9 @@ curl -X POST http://localhost:8000/api/query \
 | 5B | `frontend/src/components/MessageBubble.jsx` | User/assistant message cards |
 | 5B | `frontend/src/components/QueryInput.jsx` | Query input bar |
 | 5C | `frontend/src/api.js` | API service layer |
-| 6B | `README.md` | Project documentation |
+| 6A | `.github/workflows/daily-ingestion.yml` | GitHub Actions cron workflow for daily ingestion |
+| 6B | `backend/scripts/run_ingestion.py` | Ingestion orchestration script for CI |
+| 7B | `README.md` | Project documentation |
 
 ---
 

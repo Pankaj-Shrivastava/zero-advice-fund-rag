@@ -35,24 +35,31 @@ flowchart TB
         J --> P
     end
 
+    subgraph SCHEDULER["④ Scheduler (GitHub Actions)"]
+        SC["Cron: 05:00 UTC
+(10:30 AM IST)"] --> A
+    end
+
     style INGESTION fill:#1a1a2e,stroke:#e94560,color:#eee
     style QUERY fill:#16213e,stroke:#0f3460,color:#eee
     style UI fill:#0f3460,stroke:#53a8b6,color:#eee
+    style SCHEDULER fill:#1a1a2e,stroke:#e9a545,color:#eee
 ```
 
-The system is divided into three major layers:
+The system is divided into four major layers:
 
 | Layer | Mode | Purpose |
 |-------|------|---------|
 | **Ingestion Pipeline** | Offline / batch | Scrape, parse, chunk, embed, and index the corpus |
 | **Query Pipeline** | Online / real-time | Classify query → retrieve context → generate answer |
 | **React Frontend** | Online / real-time | Chat UI with disclaimers and example questions |
+| **Scheduler** | Cron / daily | GitHub Actions workflow triggers ingestion at 10:30 AM IST |
 
 ---
 
 ## ① Ingestion Pipeline (Offline)
 
-The ingestion pipeline runs as a one-time (or periodic) batch job to build the vector index from the 10 Groww fund page URLs.
+The ingestion pipeline runs as a daily automated batch job — triggered by the GitHub Actions scheduler at 10:30 AM IST (05:00 UTC) — to build the vector index from the 10 Groww fund page URLs.
 
 ### 1.1 Web Scraping
 
@@ -271,6 +278,53 @@ sequenceDiagram
 
 ---
 
+## ④ Scheduler (GitHub Actions)
+
+The scheduler is a GitHub Actions cron workflow that triggers the full ingestion pipeline daily at **10:30 AM IST (05:00 UTC)**, ensuring the vector store always contains fresh fund data.
+
+### 4.1 Workflow Configuration
+
+| Aspect | Detail |
+|--------|--------|
+| **Platform** | GitHub Actions (free for public repos; 2000 min/month for private) |
+| **Trigger** | Cron: `0 5 * * *` (05:00 UTC = 10:30 AM IST) + `workflow_dispatch` for manual runs |
+| **Runner** | `ubuntu-latest` |
+| **Steps** | Checkout → Setup Python → Install dependencies → Run ingestion → Commit updated vectorstore |
+
+### 4.2 Ingestion Entry Point
+
+A dedicated script `backend/scripts/run_ingestion.py` orchestrates the full pipeline:
+
+```mermaid
+flowchart LR
+    SC["GitHub Actions\nCron Trigger"] --> S["Scrape\n10 URLs"]
+    S --> P["Parse &\nClean"]
+    P --> C["Chunk"]
+    C --> E["Embed (BGE)"]
+    E --> V["Update\nChromaDB"]
+    V --> G["Git Commit\n& Push"]
+```
+
+### 4.3 ChromaDB Persistence Strategy
+
+Since GitHub Actions runners are ephemeral, the updated ChromaDB vectorstore is **committed back to the repository** after each successful ingestion run. This approach:
+
+- Keeps the vectorstore versioned and auditable via git history
+- Requires no external storage service (S3, GCS, etc.)
+- Works within the free tier — the vectorstore for 10 funds is small (~5–15 MB)
+- The backend server simply loads the latest committed vectorstore on startup
+
+### 4.4 Failure Handling
+
+| Scenario | Action |
+|----------|--------|
+| Scrape failure (URL timeout, Groww down) | Retry up to 3 times per URL; skip and log failed URLs |
+| All URLs fail | Workflow exits with error; GitHub sends email notification |
+| ChromaDB write failure | Workflow exits with error; previous vectorstore remains intact |
+| Git push conflict | Pull with rebase before push; retry once |
+
+---
+
 ## API Design
 
 ### Endpoint
@@ -345,6 +399,7 @@ GET /api/funds
 | **Backend API** | Python (FastAPI) | Free | Serve the query pipeline as a REST API |
 | **Frontend** | React (Vite) | Free | Chat-based user interface |
 | **Orchestration** | LangChain (optional) | Free | Chain retrieval + generation steps |
+| **Scheduler** | **GitHub Actions** (cron workflow) | Free | Daily ingestion trigger at 10:30 AM IST |
 
 ---
 
@@ -352,6 +407,9 @@ GET /api/funds
 
 ```
 zero-advice-fund-rag/
+├── .github/
+│   └── workflows/
+│       └── daily-ingestion.yml  # Cron workflow for daily ingestion
 ├── docs/
 │   ├── problemStatement.txt
 │   ├── context.md
@@ -371,6 +429,8 @@ zero-advice-fund-rag/
 │   ├── api/
 │   │   ├── __init__.py
 │   │   └── main.py              # FastAPI app (POST /api/query, GET /api/funds)
+│   ├── scripts/
+│   │   └── run_ingestion.py     # Full ingestion orchestrator for CI
 │   ├── vectorstore/             # Persisted ChromaDB index
 │   ├── config.py                # API keys, model config, thresholds
 │   └── requirements.txt
@@ -397,7 +457,8 @@ zero-advice-fund-rag/
 ```mermaid
 flowchart LR
     subgraph Offline
-        S["Scrape 10 URLs"] --> P["Parse & Chunk"]
+        CRON["⏰ GitHub Actions\n(Daily 10:30 AM IST)"] --> S["Scrape 10 URLs"]
+        S --> P["Parse & Chunk"]
         P --> E["Embed"]
         E --> V["Vector Store"]
     end
@@ -436,7 +497,8 @@ flowchart LR
 |------|------------|
 | Groww pages may change structure | Monitor scraper output; re-run ingestion periodically |
 | JS-rendered content may be missed | Use headless browser (Playwright) for scraping |
-| Stale data in vector store | Track `scraped_at` timestamp; surface it in the response footer |
+| Stale data in vector store | Daily automated ingestion via GitHub Actions + `scraped_at` timestamp in response footer |
+| GitHub Actions cron delay | Cron triggers can be delayed by ~15 min; acceptable for daily batch jobs |
 | LLM hallucination | Low temperature + strict system prompt + retrieved-context-only answering |
 | Ambiguous queries | LLM classifier may misroute; hybrid rule + LLM approach reduces errors |
 

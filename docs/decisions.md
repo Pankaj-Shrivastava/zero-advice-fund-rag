@@ -184,3 +184,16 @@ Each entry follows this structure:
 | **Decision** | Implement client-side session context. The backend remains completely stateless. The `POST /api/query` response returns a `context_fund` field (extracted from the retrieved ChromaDB chunks). The frontend stores this in `activeFundContext` and passes it back in the next request body. |
 | **Rationale** | Keeps the backend perfectly RESTful, stateless, and scalable. Prevents the need for a database to store user sessions or chat histories. The backend uses the provided `context_fund` to augment the query ("{query} for {context_fund}") and apply a ChromaDB metadata filter, overriding it only if the user explicitly types a different AMC name. |
 | **Impact** | `frontend/src/App.jsx`, `backend/api/main.py`, `backend/query/retriever.py` |
+
+---
+
+## DEC-015 — GitHub Actions for Scheduled Ingestion
+
+| Field | Detail |
+|-------|--------|
+| **Date** | 2026-07-02 |
+| **Context** | The ingestion pipeline needs to run daily to keep fund data fresh. Options considered: manual re-runs, local crontab, Celery beat, cloud schedulers (AWS EventBridge, GCP Cloud Scheduler), or GitHub Actions cron. |
+| **Decision** | Use a GitHub Actions cron workflow (`.github/workflows/daily-ingestion.yml`) scheduled at `0 5 * * *` (05:00 UTC = 10:30 AM IST) with `workflow_dispatch` for manual triggers. The updated ChromaDB vectorstore is committed back to the repository after each run. |
+| **Rationale** | GitHub Actions is free for public repos (2000 min/month for private), requires no additional infrastructure, is already integrated with the repository, and provides built-in email notifications on failure. Committing the vectorstore back to the repo keeps everything self-contained — no external storage (S3, GCS) needed — and the vectorstore for 10 funds is small enough (~5–15 MB) to store in git. Alternatives like local crontab require a running server, Celery requires a broker (Redis/RabbitMQ), and cloud schedulers add cost and vendor dependency. |
+| **Impact** | `.github/workflows/daily-ingestion.yml` (new), `backend/scripts/run_ingestion.py` (new), `docs/architecture.md`, `docs/implementationPlan.md` |
+
