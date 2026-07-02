@@ -43,12 +43,7 @@ def format_chunks(chunks: list) -> str:
         formatted.append(chunk_str)
     return "\n".join(formatted)
 
-@retry(
-    wait=wait_exponential(multiplier=1, min=2, max=10),
-    stop=stop_after_attempt(3),
-    retry=retry_if_exception_type(RateLimitError)
-)
-def call_groq_with_retry(client, messages, model="llama-3.1-8b-instant"):
+def call_groq(client, messages, model="llama-3.1-8b-instant"):
     return client.chat.completions.create(
         model=model,
         messages=messages,
@@ -72,12 +67,12 @@ def generate_answer(query: str, chunks: list) -> dict:
     ]
     
     try:
-        response = call_groq_with_retry(client, messages)
+        response = call_groq(client, messages)
         answer_text = response.choices[0].message.content.strip()
     except Exception as e:
         # Fallback if primary model fails
         try:
-            response = call_groq_with_retry(client, messages, model="mixtral-8x7b-32768")
+            response = call_groq(client, messages, model="mixtral-8x7b-32768")
             answer_text = response.choices[0].message.content.strip()
         except Exception as fallback_e:
             answer_text = "I am currently experiencing high traffic and cannot generate an answer right now. Please try again later."
