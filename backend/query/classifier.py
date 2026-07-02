@@ -25,6 +25,17 @@ ADVISORY_KEYWORDS = [
 ]
 
 def classify_query(query: str) -> dict:
+    """
+    Classifies a user query into FACTUAL, ADVISORY, PII, or ERROR.
+    
+    Args:
+        query (str): The user's input string.
+        
+    Returns:
+        dict: A dictionary containing the classification type and the original query.
+              For PII and ADVISORY, returns type PII/ADVISORY.
+              For normal questions, returns FACTUAL.
+    """
     if not query or not query.strip():
         return {"type": "ERROR", "query": query, "message": "Query cannot be empty."}
         

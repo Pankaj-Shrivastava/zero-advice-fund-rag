@@ -9,6 +9,17 @@ from backend.query.generator import generate_answer
 from backend.query.refusal import get_advisory_refusal, get_pii_refusal, get_no_context_refusal
 
 def process_query(question: str, context_fund: str = None) -> dict:
+    """
+    Main entry point for processing a user's query.
+    Orchestrates the classification, retrieval, and generation steps.
+    
+    Args:
+        question (str): The user's input query.
+        context_fund (str, optional): Fund scheme carried over from the previous turn context.
+        
+    Returns:
+        dict: The final response dictionary ready to be returned to the client.
+    """
     if not question or not question.strip():
         return {"status": "error", "type": "error", "answer": "Query cannot be empty."}
         
