@@ -48,7 +48,7 @@ def format_chunks(chunks: list) -> str:
     stop=stop_after_attempt(3),
     retry=retry_if_exception_type(RateLimitError)
 )
-def call_groq_with_retry(client, messages, model="llama-3.3-70b-versatile"):
+def call_groq_with_retry(client, messages, model="llama-3.1-8b-instant"):
     return client.chat.completions.create(
         model=model,
         messages=messages,
